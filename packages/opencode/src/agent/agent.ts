@@ -142,6 +142,7 @@ const layer = Layer.effect(
             name: "build",
             description: "The default agent. Executes tools based on configured permissions.",
             options: {},
+            color: "#b19cd9",
             permission: Permission.merge(
               defaults,
               Permission.fromConfig({
@@ -157,6 +158,7 @@ const layer = Layer.effect(
             name: "plan",
             description: "Plan mode. Disallows all edit tools.",
             options: {},
+            color: "#90ee90",
             permission: Permission.merge(
               defaults,
               Permission.fromConfig({
