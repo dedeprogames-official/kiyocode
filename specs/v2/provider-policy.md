@@ -62,7 +62,7 @@ The `Policy` module owns the shared `Policy.Info` interface, `Policy.Effect` typ
 
 ## Matching
 
-Both `action` and `resource` use opencode's existing wildcard matching behavior.
+Both `action` and `resource` use kiyocode's existing wildcard matching behavior.
 
 Examples:
 
@@ -197,7 +197,7 @@ Organization-managed policy is not ordinary authored config. When implemented, m
 repository policy -> user-global policy -> organization-managed policy
 ```
 
-Plugins must not be allowed to add, remove, or override policy statements. Plugins can contribute functionality or configured providers; policy determines whether opencode permits an operation through its managed execution paths.
+Plugins must not be allowed to add, remove, or override policy statements. Plugins can contribute functionality or configured providers; policy determines whether kiyocode permits an operation through its managed execution paths.
 
 Provider policy is not a full sandbox for executable plugins. A denied provider must not be usable through the normal provider/model path, but arbitrary plugin code requires separate governance if that becomes a compliance requirement.
 

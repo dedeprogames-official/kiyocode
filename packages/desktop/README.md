@@ -1,6 +1,6 @@
-# OpenCode Desktop
+# KiyoCode Desktop
 
-The OpenCode Desktop app, built with Electron.
+The KiyoCode Desktop app, built with Electron.
 
 ## Development
 

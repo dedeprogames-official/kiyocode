@@ -156,7 +156,7 @@ interface ExecuteFailure {
 
 The agent-tool instructions use a budgeted catalog. Every tool namespace is always listed with its tool count regardless of budget, and as many complete tool signatures (each with a one-line description) as fit an estimated-token budget are inlined. Selection is round-robin across namespaces for fairness: in each round (namespaces alphabetical), every namespace still holding un-inlined tools attempts to place its next-cheapest signature line against the shared budget, and a namespace whose next line does not fit drops out while the others keep going - so every namespace gets some representation before any namespace gets everything. The instructions state exactly how comprehensive the list is, both overall (`COMPLETE list` vs `PARTIAL - N of M shown`) and per namespace (`(3 tools)`, `(3 tools, 1 shown)`, `(3 tools, none shown)`).
 
-The default budget is 2,000 estimated tokens (characters / 4, the same heuristic OpenCode uses). Override it when constructing a runtime:
+The default budget is 2,000 estimated tokens (characters / 4, the same heuristic KiyoCode uses). Override it when constructing a runtime:
 
 ```ts
 const runtime = CodeMode.make({
@@ -232,7 +232,7 @@ The limits are exactly three knobs:
 | `maxToolCalls`   |     none - unlimited | Tool calls admitted during the execution.                            |
 | `maxOutputBytes` | none - no truncation | Model-facing output: the serialized result value plus captured logs. |
 
-No limit has a default, on purpose: execution budgets are host policy, not library policy - a host that wants a bound sets one; a host that can interrupt the execution fiber (as OpenCode does on user cancel) may set no timeout, and a host with its own tool-output truncation (as OpenCode has) may leave `maxOutputBytes` unset. A host with neither should set `maxOutputBytes`, or oversized results silently flood model context.
+No limit has a default, on purpose: execution budgets are host policy, not library policy - a host that wants a bound sets one; a host that can interrupt the execution fiber (as KiyoCode does on user cancel) may set no timeout, and a host with its own tool-output truncation (as KiyoCode has) may leave `maxOutputBytes` unset. A host with neither should set `maxOutputBytes`, or oversized results silently flood model context.
 
 Pass only the overrides you need:
 

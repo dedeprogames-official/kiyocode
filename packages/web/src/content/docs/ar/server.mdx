@@ -1,12 +1,12 @@
 ---
 title: الخادم
-description: تفاعل مع خادم opencode عبر HTTP.
+description: تفاعل مع خادم kiyocode عبر HTTP.
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-يشغّل الأمر `opencode serve` خادما HTTP دون واجهة ويعرض نقطة نهاية OpenAPI يمكن لعميل opencode استخدامها.
+يشغّل الأمر `opencode serve` خادما HTTP دون واجهة ويعرض نقطة نهاية OpenAPI يمكن لعميل kiyocode استخدامها.
 
 ---
 
@@ -51,12 +51,12 @@ OPENCODE_SERVER_PASSWORD=your-password opencode serve
 وتُستخدم هذه النقطة أيضا لتوليد [SDK](/docs/sdk).
 
 :::tip
-استخدم خادم opencode للتفاعل مع opencode برمجيا.
+استخدم خادم kiyocode للتفاعل مع kiyocode برمجيا.
 :::
 
-تتيح هذه البنية لـ opencode دعم عدة عملاء وتمكّنك من التفاعل مع opencode برمجيا.
+تتيح هذه البنية لـ kiyocode دعم عدة عملاء وتمكّنك من التفاعل مع kiyocode برمجيا.
 
-يمكنك تشغيل `opencode serve` لبدء خادم مستقل. إذا كانت واجهة opencode في terminal (TUI)
+يمكنك تشغيل `opencode serve` لبدء خادم مستقل. إذا كانت واجهة kiyocode في terminal (TUI)
 قيد التشغيل، فسيبدأ `opencode serve` خادما جديدا.
 
 ---
@@ -65,7 +65,7 @@ OPENCODE_SERVER_PASSWORD=your-password opencode serve
 
 عند بدء الـ TUI تقوم بتعيين منفذ واسم مضيف عشوائيا. يمكنك بدلا من ذلك تمرير [الخيارات](/docs/cli) `--hostname` و `--port`، ثم استخدامهما للاتصال بخادمها.
 
-يمكن استخدام نقطة النهاية [`/tui`](#tui) للتحكم في الـ TUI عبر الخادم. على سبيل المثال، يمكنك تعبئة الموجّه مسبقا أو تشغيله. يُستخدم هذا الإعداد بواسطة ملحقات OpenCode لـ [IDE](/docs/ide).
+يمكن استخدام نقطة النهاية [`/tui`](#tui) للتحكم في الـ TUI عبر الخادم. على سبيل المثال، يمكنك تعبئة الموجّه مسبقا أو تشغيله. يُستخدم هذا الإعداد بواسطة ملحقات KiyoCode لـ [IDE](/docs/ide).
 
 ---
 
@@ -83,7 +83,7 @@ http://<hostname>:<port>/doc
 
 ## واجهات API
 
-يعرض خادم opencode واجهات API التالية.
+يعرض خادم kiyocode واجهات API التالية.
 
 ---
 

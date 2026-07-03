@@ -1,33 +1,33 @@
 ---
 title: GitLab
-description: استخدم OpenCode في مشكلات GitLab وطلبات الدمج.
+description: استخدم KiyoCode في مشكلات GitLab وطلبات الدمج.
 ---
 
-يتكامل OpenCode مع سير عمل GitLab لديك عبر خط أنابيب GitLab CI/CD أو عبر GitLab Duo.
+يتكامل KiyoCode مع سير عمل GitLab لديك عبر خط أنابيب GitLab CI/CD أو عبر GitLab Duo.
 
-في كلتا الحالتين، سيعمل OpenCode على مشغّلات GitLab لديك.
+في كلتا الحالتين، سيعمل KiyoCode على مشغّلات GitLab لديك.
 
 ---
 
 ## GitLab CI
 
-يعمل OpenCode ضمن خط أنابيب GitLab عادي. يمكنك دمجه في الخط كمكوّن [CI](https://docs.gitlab.com/ee/ci/components/).
+يعمل KiyoCode ضمن خط أنابيب GitLab عادي. يمكنك دمجه في الخط كمكوّن [CI](https://docs.gitlab.com/ee/ci/components/).
 
-هنا نستخدم مكوّن CI/CD أنشأه المجتمع لـ OpenCode — [nagyv/gitlab-opencode](https://gitlab.com/nagyv/gitlab-opencode).
+هنا نستخدم مكوّن CI/CD أنشأه المجتمع لـ KiyoCode — [nagyv/gitlab-kiyocode](https://gitlab.com/nagyv/gitlab-kiyocode).
 
 ---
 
 ### الميزات
 
-- **استخدام إعدادات مخصّصة لكل مهمة**: يمكنك إعداد OpenCode باستخدام دليل إعدادات مخصّص، مثل `./config/#custom-directory`، لتفعيل الوظائف أو تعطيلها في كل تشغيل لـ OpenCode.
-- **إعداد بسيط**: يقوم مكوّن CI بإعداد OpenCode في الخلفية؛ كل ما عليك هو إنشاء إعدادات OpenCode والمطالبة (prompt) الأولية.
+- **استخدام إعدادات مخصّصة لكل مهمة**: يمكنك إعداد KiyoCode باستخدام دليل إعدادات مخصّص، مثل `./config/#custom-directory`، لتفعيل الوظائف أو تعطيلها في كل تشغيل لـ KiyoCode.
+- **إعداد بسيط**: يقوم مكوّن CI بإعداد KiyoCode في الخلفية؛ كل ما عليك هو إنشاء إعدادات KiyoCode والمطالبة (prompt) الأولية.
 - **مرن**: يدعم مكوّن CI عدة مُدخلات لتخصيص سلوكه.
 
 ---
 
 ### الإعداد
 
-1. احفظ JSON مصادقة OpenCode كمتغيرات بيئة CI من نوع File ضمن **Settings** > **CI/CD** > **Variables**. تأكد من تعيينها على "Masked and hidden".
+1. احفظ JSON مصادقة KiyoCode كمتغيرات بيئة CI من نوع File ضمن **Settings** > **CI/CD** > **Variables**. تأكد من تعيينها على "Masked and hidden".
 2. أضف ما يلي إلى ملف `.gitlab-ci.yml`.
 
    ```yaml title=".gitlab-ci.yml"
@@ -40,29 +40,29 @@ description: استخدم OpenCode في مشكلات GitLab وطلبات الد�
          message: "Your prompt here"
    ```
 
-لمزيد من المُدخلات وحالات الاستخدام، [اطّلع على الوثائق](https://gitlab.com/explore/catalog/nagyv/gitlab-opencode) الخاصة بهذا المكوّن.
+لمزيد من المُدخلات وحالات الاستخدام، [اطّلع على الوثائق](https://gitlab.com/explore/catalog/nagyv/gitlab-kiyocode) الخاصة بهذا المكوّن.
 
 ---
 
 ## GitLab Duo
 
-يتكامل OpenCode مع سير عمل GitLab لديك.
-اذكر `@opencode` في تعليق، وسينفّذ OpenCode المهام ضمن خط أنابيب GitLab CI لديك.
+يتكامل KiyoCode مع سير عمل GitLab لديك.
+اذكر `@opencode` في تعليق، وسينفّذ KiyoCode المهام ضمن خط أنابيب GitLab CI لديك.
 
 ---
 
 ### الميزات
 
-- **فرز المشكلات**: اطلب من OpenCode النظر في مشكلة وشرحها لك.
-- **الإصلاح والتنفيذ**: اطلب من OpenCode إصلاح مشكلة أو تنفيذ ميزة.
+- **فرز المشكلات**: اطلب من KiyoCode النظر في مشكلة وشرحها لك.
+- **الإصلاح والتنفيذ**: اطلب من KiyoCode إصلاح مشكلة أو تنفيذ ميزة.
   سيُنشئ فرعًا جديدًا ويرفع طلب دمج بالتغييرات.
-- **آمن**: يعمل OpenCode على مشغّلات GitLab لديك.
+- **آمن**: يعمل KiyoCode على مشغّلات GitLab لديك.
 
 ---
 
 ### الإعداد
 
-يعمل OpenCode ضمن خط أنابيب GitLab CI/CD لديك، وإليك ما ستحتاجه لإعداده:
+يعمل KiyoCode ضمن خط أنابيب GitLab CI/CD لديك، وإليك ما ستحتاجه لإعداده:
 
 :::tip
 اطّلع على [**وثائق GitLab**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) للحصول على تعليمات محدّثة.
@@ -158,7 +158,7 @@ description: استخدم OpenCode في مشكلات GitLab وطلبات الد�
 
 ### أمثلة
 
-فيما يلي بعض الأمثلة على كيفية استخدام OpenCode في GitLab.
+فيما يلي بعض الأمثلة على كيفية استخدام KiyoCode في GitLab.
 
 :::tip
 يمكنك ضبطه لاستخدام عبارة تشغيل مختلفة عن `@opencode`.
@@ -172,7 +172,7 @@ description: استخدم OpenCode في مشكلات GitLab وطلبات الد�
   @opencode explain this issue
   ```
 
-  سيقرأ OpenCode المشكلة ويرد بشرح واضح.
+  سيقرأ KiyoCode المشكلة ويرد بشرح واضح.
 
 - **إصلاح مشكلة**
 
@@ -182,7 +182,7 @@ description: استخدم OpenCode في مشكلات GitLab وطلبات الد�
   @opencode fix this
   ```
 
-  سيُنشئ OpenCode فرعًا جديدًا، وينفّذ التغييرات، ويفتح طلب دمج بالتغييرات.
+  سيُنشئ KiyoCode فرعًا جديدًا، وينفّذ التغييرات، ويفتح طلب دمج بالتغييرات.
 
 - **مراجعة طلبات الدمج**
 
@@ -192,4 +192,4 @@ description: استخدم OpenCode في مشكلات GitLab وطلبات الد�
   @opencode review this merge request
   ```
 
-  سيُراجع OpenCode طلب الدمج ويقدّم ملاحظات.
+  سيُراجع KiyoCode طلب الدمج ويقدّم ملاحظات.

@@ -1,33 +1,33 @@
 ---
 title: GitLab
-description: Bruk opencode i GitLab-problemer og Merge Requests.
+description: Bruk kiyocode i GitLab-problemer og Merge Requests.
 ---
 
-OpenCode integreres med GitLab arbeidsflyten gjennom GitLab CI/CD pipeline eller med GitLab Duo.
+KiyoCode integreres med GitLab arbeidsflyten gjennom GitLab CI/CD pipeline eller med GitLab Duo.
 
-I begge tilfeller vil OpenCode kjøre på GitLab Runners.
+I begge tilfeller vil KiyoCode kjøre på GitLab Runners.
 
 ---
 
 ## GitLab CI
 
-OpenCode fungerer i en vanlig GitLab-pipeline. Du kan bygge den inn i en pipeline som en [CI-komponent](https://docs.gitlab.com/ee/ci/components/)
+KiyoCode fungerer i en vanlig GitLab-pipeline. Du kan bygge den inn i en pipeline som en [CI-komponent](https://docs.gitlab.com/ee/ci/components/)
 
-Her bruker vi en fellesskapsskapt CI/CD-komponent for OpenCode — [nagyv/gitlab-opencode](https://gitlab.com/nagyv/gitlab-opencode).
+Her bruker vi en fellesskapsskapt CI/CD-komponent for KiyoCode — [nagyv/gitlab-kiyocode](https://gitlab.com/nagyv/gitlab-kiyocode).
 
 ---
 
 ### Funksjoner
 
-- **Bruk tilpasset konfigurasjon per jobb**: Konfigurer OpenCode med en tilpasset konfigurasjonskatalog, for eksempel `./config/#custom-directory` for å aktivere eller deaktivere funksjonalitet per OpenCode-anrop.
-- **Minimalt oppsett**: CI-komponenten setter opp OpenCode i bakgrunnen, du trenger bare å lage OpenCode-konfigurasjonen og den første ledeteksten.
+- **Bruk tilpasset konfigurasjon per jobb**: Konfigurer KiyoCode med en tilpasset konfigurasjonskatalog, for eksempel `./config/#custom-directory` for å aktivere eller deaktivere funksjonalitet per KiyoCode-anrop.
+- **Minimalt oppsett**: CI-komponenten setter opp KiyoCode i bakgrunnen, du trenger bare å lage KiyoCode-konfigurasjonen og den første ledeteksten.
 - **Fleksibel**: CI-komponenten støtter flere innganger for å tilpasse virkemåten
 
 ---
 
 ### Oppsett
 
-1. Lagre OpenCode sin autentiserings-JSON som en CI-miljøvariabel av typen Fil under **Innstillinger** > **CI/CD** > **Variabler**. Sørg for å merke dem som "Masked and hidden".
+1. Lagre KiyoCode sin autentiserings-JSON som en CI-miljøvariabel av typen Fil under **Innstillinger** > **CI/CD** > **Variabler**. Sørg for å merke dem som "Masked and hidden".
 2. Legg til følgende i `.gitlab-ci.yml`-filen.
 
    ```yaml title=".gitlab-ci.yml"
@@ -40,29 +40,29 @@ Her bruker vi en fellesskapsskapt CI/CD-komponent for OpenCode — [nagyv/gitlab
          message: "Your prompt here"
    ```
 
-For flere inndata og brukstilfeller [sjekk ut dokumentene](https://gitlab.com/explore/catalog/nagyv/gitlab-opencode) for denne komponenten.
+For flere inndata og brukstilfeller [sjekk ut dokumentene](https://gitlab.com/explore/catalog/nagyv/gitlab-kiyocode) for denne komponenten.
 
 ---
 
 ## GitLab Duo
 
-OpenCode integreres med din GitLab arbeidsflyt.
-Nevn `@opencode` i en kommentar, og OpenCode vil utføre oppgaver innenfor din GitLab CI-pipeline.
+KiyoCode integreres med din GitLab arbeidsflyt.
+Nevn `@opencode` i en kommentar, og KiyoCode vil utføre oppgaver innenfor din GitLab CI-pipeline.
 
 ---
 
 ### Funksjoner
 
-- **Triage av saker**: Be OpenCode se på en sak og forklare den for deg.
-- **Fiks og implementer**: Be OpenCode om å fikse en sak eller implementere en funksjon.
+- **Triage av saker**: Be KiyoCode se på en sak og forklare den for deg.
+- **Fiks og implementer**: Be KiyoCode om å fikse en sak eller implementere en funksjon.
   Det vil opprette en ny gren og sende en Merge Request med endringene.
-- **Sikkert**: OpenCode kjører på GitLab Runners.
+- **Sikkert**: KiyoCode kjører på GitLab Runners.
 
 ---
 
 ### Oppsett
 
-OpenCode kjører i GitLab CI/CD pipeline, her er det du trenger for å sette den opp:
+KiyoCode kjører i GitLab CI/CD pipeline, her er det du trenger for å sette den opp:
 
 :::tip
 Sjekk ut [**GitLab-dokumentene**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) for oppdaterte instruksjoner.
@@ -158,7 +158,7 @@ Du kan se [GitLab CLI agents docs](https://docs.gitlab.com/user/duo_agent_platfo
 
 ### Eksempler
 
-Her er noen eksempler på hvordan du kan bruke OpenCode i GitLab.
+Her er noen eksempler på hvordan du kan bruke KiyoCode i GitLab.
 
 :::tip
 Du kan konfigurere til å bruke en annen triggerfrase enn `@opencode`.
@@ -172,7 +172,7 @@ Du kan konfigurere til å bruke en annen triggerfrase enn `@opencode`.
   @opencode explain this issue
   ```
 
-  OpenCode vil lese saken og svare med en klar forklaring.
+  KiyoCode vil lese saken og svare med en klar forklaring.
 
 - **Fiks en sak**
 
@@ -182,7 +182,7 @@ Du kan konfigurere til å bruke en annen triggerfrase enn `@opencode`.
   @opencode fix this
   ```
 
-  OpenCode vil opprette en ny gren, implementere endringene og åpne en Merge Request med endringene.
+  KiyoCode vil opprette en ny gren, implementere endringene og åpne en Merge Request med endringene.
 
 - **Review av Merge Requests**
 
@@ -192,4 +192,4 @@ Du kan konfigurere til å bruke en annen triggerfrase enn `@opencode`.
   @opencode review this merge request
   ```
 
-  OpenCode vil gjennomgå Merge Request-en og gi tilbakemelding.
+  KiyoCode vil gjennomgå Merge Request-en og gi tilbakemelding.

@@ -1,6 +1,6 @@
 # Server Package Extraction
 
-Practical reference for a future `packages/server` split after the opencode
+Practical reference for a future `packages/server` split after the kiyocode
 server moved to the Effect HttpApi backend.
 
 ## Current State
