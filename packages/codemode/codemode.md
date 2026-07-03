@@ -1,10 +1,10 @@
 # CodeMode - Status, Decisions, and Remaining Work
 
-This document is the working plan for `@opencode-ai/codemode` and its OpenCode integration.
+This document is the working plan for `@opencode-ai/codemode` and its KiyoCode integration.
 It captures every locked decision, everything already implemented, and a detailed TODO of what
 remains - enough context that someone (human or agent) can pick up any item cold.
 
-Tracking issue: https://github.com/anomalyco/opencode/issues/34787
+Tracking issue: https://github.com/dedeprogames-official/kiyocode/issues/34787
 Working branch: `codemode-v2` (base: `dev`)
 
 ---
@@ -22,8 +22,8 @@ Architecture split (locked):
 - **`packages/codemode` (`@opencode-ai/codemode`)** - the generic, host-agnostic runtime:
   a hand-rolled, Effect-native, tree-walking interpreter over acorn ASTs (TypeScript stripped
   via `typescript`'s `transpileModule`), the tool runtime/data boundary, discovery/search, and
-  `Tool.make`. It knows nothing about OpenCode, MCP, permissions, or rendering.
-- **`packages/opencode`** - the OpenCode integration: an MCP adapter that converts MCP tool
+  `Tool.make`. It knows nothing about KiyoCode, MCP, permissions, or rendering.
+- **`packages/opencode`** - the KiyoCode integration: an MCP adapter that converts MCP tool
   definitions into `Tool.make(...)` definitions, permission gating, host-side attachment
   collection, the agent-facing `execute` tool, and TUI progress rendering.
 
@@ -46,7 +46,7 @@ From issue #34787 and design discussion. Do not relitigate these casually.
   test the whole surface; the model only needs orchestration syntax, not a full runtime.
 - Naming: `CodeMode`, `Tool`, `ToolError`, `UnknownTool` (diagnostic kind), `$codemode`
   reserved discovery namespace. (Historical names - "rune", "capability" - are dead.)
-- Existing OpenCode core tools (bash/edit/patch/...) stay registered normally for v1.
+- Existing KiyoCode core tools (bash/edit/patch/...) stay registered normally for v1.
   CodeMode covers MCP tools, user-registered tools, and deferred tools only.
 - Test runner is `bun test`; typecheck is `tsgo --noEmit` (repo conventions). Not vitest.
 - **Never reference external prior-art implementations** (other companies' code-execution
@@ -54,12 +54,12 @@ From issue #34787 and design discussion. Do not relitigate these casually.
 
 ### MCP / tools
 
-- The MCP adapter lives in OpenCode, not here. It converts MCP definitions into ordinary
+- The MCP adapter lives in KiyoCode, not here. It converts MCP definitions into ordinary
   `Tool.make(...)` definitions and hands CodeMode a plain tool tree.
-- Permissions stay in the OpenCode adapter (each tool's `run` wraps the permission ask).
+- Permissions stay in the KiyoCode adapter (each tool's `run` wraps the permission ask).
   CodeMode stays dumb - no permission model in this package.
 - Namespace collisions: last write wins (plain JS object override). No `tools.mcp.*` prefix,
-  no `_2` suffixing, no cleverness. OpenCode groups flat `server_tool` MCP names into
+  no `_2` suffixing, no cleverness. KiyoCode groups flat `server_tool` MCP names into
   `tools.<server>.<tool>` namespaces before handing them over.
 
 ### Discovery / search
@@ -97,9 +97,9 @@ limit? })` over the final tool tree, owned by this package.
 
 - **No `output.text/file/image` API in v1.** (Deleted in Wave 2.)
 - Tool calls return native structured payloads into the sandbox. Files/images emitted by
-  child tools **never enter the sandbox** - the OpenCode adapter strips and accumulates them
+  child tools **never enter the sandbox** - the KiyoCode adapter strips and accumulates them
   host-side as calls happen, then returns them on the outer `execute` tool result as ordinary
-  tool-result attachments (OpenCode already has `Tool.ExecuteResult.attachments` -> vision
+  tool-result attachments (KiyoCode already has `Tool.ExecuteResult.attachments` -> vision
   plumbing in `message-v2.ts`).
 - No base64 in CodeMode values, ever. The model routes nothing; it can't accidentally dump
   image bytes into context or drop attachments.
@@ -111,10 +111,10 @@ limit? })` over the final tool tree, owned by this package.
   for the first two; extended to `maxOutputBytes` in the truncation-layering fix below):
   absent = no timeout / unlimited calls / no output truncation - budgets are host policy.
   A host without its own output bounding should set `maxOutputBytes` explicitly, or
-  oversized results silently flood model context. OpenCode's adapter policy (user
+  oversized results silently flood model context. KiyoCode's adapter policy (user
   direction): NO limits at all - no timeout, unlimited tool calls (each child call is
   permission-gated; user cancel interrupts the execution fiber and its children), and no
-  CodeMode truncation (output bounding is OpenCode's native tool-output truncation).
+  CodeMode truncation (output bounding is KiyoCode's native tool-output truncation).
   The internal limit system that Wave 2 kept behind
   an `@internal` `InternalExecutionLimits` type (maxOperations, maxDataBytes, maxValueDepth,
   maxCollectionLength, maxSourceBytes, maxAuditBytes, maxConcurrency) was deleted outright in
@@ -122,8 +122,8 @@ limit? })` over the final tool tree, owned by this package.
   `TOOL_CALL_CONCURRENCY = 8` (the fork semaphore) and `MAX_VALUE_DEPTH = 32` (the `copyIn`
   boundary depth check, kept only because it beats a native stack-overflow RangeError as an
   error message; still reports `InvalidDataValue`).
-- Truncation layering RESOLVED (user direction): CodeMode truncation is off in OpenCode.
-  `execute` is a normal `Tool.define` tool, so OpenCode's native tool-output truncation
+- Truncation layering RESOLVED (user direction): CodeMode truncation is off in KiyoCode.
+  `execute` is a normal `Tool.define` tool, so KiyoCode's native tool-output truncation
   (50KB / 2000 lines in `tool.ts` + `truncate.ts`, full output dumped to a file) applies to
   it with no special-casing - verified by tracing `wrap()` in `tool.ts:130-144` (the
   `metadata.truncated` exemption never fires for `execute`). One truncation layer, the
@@ -144,7 +144,7 @@ input })` and `onToolCallEnd({ index, name, input, durationMs, outcome, message?
 ## 3. Current status (what is already done on `codemode-v2`)
 
 Everything below is committed and pushed on `codemode-v2` (six commits, in pairs of
-generic-package + OpenCode-integration: waves 0-5, Fixes 4-9, then the DSL-expansion pass /
+generic-package + KiyoCode-integration: waves 0-5, Fixes 4-9, then the DSL-expansion pass /
 real-JS error names / truncation layering). Verification: from `packages/codemode`,
 `bun test` (211 pass / 0 fail across `codemode/parity/stdlib/promise/enumeration/signature`)
 and `bun run typecheck`; from `packages/opencode`, `bun run typecheck` and
@@ -158,14 +158,14 @@ and `bun run typecheck`; from `packages/opencode`, `bun run typecheck` and
 - `packages/codemode` created from the experiments implementation: `src/{index,codemode,tool,
 tool-error,tool-runtime}.ts`, README, AGENTS.md, tests.
 - `package.json`: name `@opencode-ai/codemode`, deps `acorn@8.15.0`, `typescript: catalog:`,
-  `effect: catalog:` (both repos pin effect `4.0.0-beta.83`; opencode's effect patch only
+  `effect: catalog:` (both repos pin effect `4.0.0-beta.83`; kiyocode's effect patch only
   touches `unstable/httpapi`, which this package doesn't use).
 - Tests converted vitest -> `bun:test`. Only src change from verbatim: the `CurrentToolCall`
   Context.Service key string renamed to `@opencode-ai/codemode/CurrentToolCall`.
 
 ### Wave 1a - forgiving JS semantics (done)
 
-Ported from the old opencode rune work; `test/parity.test.ts` (24 tests) is the acceptance
+Ported from the old kiyocode rune work; `test/parity.test.ts` (24 tests) is the acceptance
 spec. The seeded interpreter was deliberately strict; these behaviors replaced that:
 
 - **H1**: NaN/Infinity flow as in-sandbox values (`copyIn` admits them; `NaN`/`Infinity` are
@@ -253,7 +253,7 @@ output limit; return a smaller value]`; logs keep leading lines within the remai
   trimmed query equal to one tool path (optionally `tools.`-prefixed) returns that tool alone
   (`total: 1`), bypassing ranking. Tokenization/ranking/shape unchanged.
 
-### Wave 3 - OpenCode MCP adapter (done)
+### Wave 3 - KiyoCode MCP adapter (done)
 
 `packages/opencode/src/session/code-mode.ts` rewritten as a thin adapter over this package;
 the vendored rune interpreter is gone. Same `define(mcpTools, mcpDefs, servers)` signature, so
@@ -295,9 +295,9 @@ error - logs are plain pre-formatted lines now), attachments: accumulated }` thr
   `$codemode.search` calls stream through the same channel.
 - **Deletions/deps**: `src/session/rune/` (all five files) and
   `test/session/rune-parity.test.ts` (superseded by this package's `test/parity.test.ts`)
-  deleted; `acorn` removed from opencode deps, `typescript` moved back to devDependencies,
+  deleted; `acorn` removed from kiyocode deps, `typescript` moved back to devDependencies,
   `"@opencode-ai/codemode": "workspace:*"` added; `bun install` run (lockfile updated).
-- **Tests**: both opencode suites rewritten against the adapter design -
+- **Tests**: both kiyocode suites rewritten against the adapter design -
   `code-mode.test.ts` (34: grouping, description/signature rendering incl. the large-catalog
   search fallback, execution, permission flow + denial, metadata streaming, attachment
   accumulation + media-only marker, logs on success/error, truncation marker,
@@ -309,14 +309,14 @@ error - logs are plain pre-formatted lines now), attachments: accumulated }` thr
 ### Wave 4 - instructions/prompting + polish (done)
 
 Instructions are now the budgeted-catalog + prompting-guidance form; verified e2e against a
-real MCP config. Package still 101 tests / 0 fail; opencode adapter suites still 34 + 16; both
+real MCP config. Package still 101 tests / 0 fail; kiyocode adapter suites still 34 + 16; both
 packages typecheck clean.
 
 - **Budgeted catalog** (`discoveryPlan` in `tool-runtime.ts`): the all-or-nothing
   inline/search modes are gone - `DiscoveryMode` deleted, `DiscoveryOptions` is just
   `{ maxInlineCatalogBytes? }` (default 16,000 UTF-8 bytes; later converted to
   `maxInlineCatalogTokens`, default 4,000 estimated tokens - see Post-wave fixes). Port of
-  the old opencode
+  the old kiyocode
   `describe()` `PREVIEW_BUDGET` algorithm, adapted to `ToolDescription`: every namespace is
   ALWAYS listed with its tool count; full signature lines
   (`  - <signature> // <first line of description, capped at 120 chars>`) are inlined
@@ -347,12 +347,12 @@ packages typecheck clean.
 - **Tests**: 4 package discovery tests rewritten for the budgeted behavior (COMPLETE small
   catalog + search-still-registered; PARTIAL at budget 0; cheapest-first selection +
   per-namespace labels + budget-exhaustion stopping later namespaces; mode-validation
-  assertion dropped); 3 opencode description assertions updated (COMPLETE/PARTIAL headers,
+  assertion dropped); 3 kiyocode description assertions updated (COMPLETE/PARTIAL headers,
   namespace labels, `(input: {})` rendering, cheapest-first op_0 shown / op_149 not).
 - **E2E (verified, headless)**: from the repo root with `OPENCODE_EXPERIMENTAL_CODE_MODE=1`,
   the scratch `.opencode/opencode.jsonc` (context7, github, playwright, sentry, memory,
-  sequential-thinking; left uncommitted/as-is), and `bun packages/opencode/src/index.ts run
---dangerously-skip-permissions -m opencode/claude-sonnet-4-5 "..."`. Confirmed: a single
+  sequential-thinking; left uncommitted/as-is), and `bun packages/kiyocode/src/index.ts run
+--dangerously-skip-permissions -m kiyocode/claude-sonnet-4-5 "..."`. Confirmed: a single
   `execute` tool registered alongside core tools (per-MCP registration suppressed; MCP
   resource tools unaffected); the live description read back as "Available tools (PARTIAL -
   56 of 88 shown; find the rest with tools.$codemode.search):" with correct per-namespace
@@ -367,7 +367,7 @@ packages typecheck clean.
 
 First-class promise values in the interpreter; the direct-tool-call-only `Promise.all`
 restriction (and its bespoke AST checks) is gone. Package suite is 136 tests / 0 fail (35 new
-in `test/promise.test.ts`); adapter suites and both typechecks unchanged/green; the opencode
+in `test/promise.test.ts`); adapter suites and both typechecks unchanged/green; the kiyocode
 adapter needed **no changes**.
 
 - **Decision: eager fork** (`const p = tools.a.b(x)` starts the call immediately on a
@@ -613,9 +613,9 @@ unlimited calls. Budgets are host policy, not library policy; `maxOutputBytes` k
 means no truncation). `ResolvedExecutionLimits` carries `number | undefined` for both, the
 timeout wrapper is only applied when configured, and `ToolRuntime.make` treats undefined
 `maxToolCalls` as uncapped. Validation is unchanged when values ARE provided (safe integers,
-timeoutMs >= 1, others >= 0). The OpenCode adapter is unaffected in behavior it sets
+timeoutMs >= 1, others >= 0). The KiyoCode adapter is unaffected in behavior it sets
 (explicit 30s timeout) but now runs with unlimited tool calls. Immediately after, per user
-direction, the adapter's 30s timeout was killed too: `CODE_LIMITS` is deleted and OpenCode
+direction, the adapter's 30s timeout was killed too: `CODE_LIMITS` is deleted and KiyoCode
 passes NO limits - no timeout, no tool-call cap. Rationale: user cancel interrupts the
 execution fiber and structured concurrency takes the program and in-flight child calls down
 with it; every child call is permission-gated; output truncation (32KB default) is the only
@@ -828,7 +828,7 @@ Error`/splice mentions (nothing else reworded); README updated (checkpoint
   rendering, table cells, caught-tool-failure `instanceof`); adapter suites unchanged
   (34 + 16, green); both packages `tsgo --noEmit` clean.
 
-**Truncation layering - CodeMode truncation off in OpenCode** (user direction; resolves the
+**Truncation layering - CodeMode truncation off in KiyoCode** (user direction; resolves the
 section 4 outer-truncation item the OPPOSITE way from "kill the outer one"):
 
 - `maxOutputBytes` lost its 32,000 default and now behaves exactly like the other two
@@ -836,8 +836,8 @@ section 4 outer-truncation item the OPPOSITE way from "kill the outer one"):
   host policy. `ResolvedExecutionLimits.maxOutputBytes` is `number | undefined`;
   `boundOutput` only runs when the host set the limit. Explicit values validate as before
   (safe integer >= 0).
-- OpenCode continues to pass NO limits, which now also means no CodeMode truncation.
-  `execute` is a normal `Tool.define` tool, so OpenCode's native tool-output truncation
+- KiyoCode continues to pass NO limits, which now also means no CodeMode truncation.
+  `execute` is a normal `Tool.define` tool, so KiyoCode's native tool-output truncation
   applies with no special-casing - verified by tracing `wrap()` (`tool.ts:130-144`,
   50KB/2000-line thresholds in `truncate.ts`, full output dumped to a file under
   `tool-output/`): the `metadata.truncated` self-truncation exemption never fires for
@@ -1053,7 +1053,7 @@ Explicit non-goals for now: `structuredClone`, `WeakMap`/`WeakSet`, and timers
 (`setTimeout`/`setInterval`/`queueMicrotask`). They do not materially improve the current tool
 orchestration use case.
 
-### Wiring-review findings (subagent code review of the OpenCode integration, triaged)
+### Wiring-review findings (subagent code review of the KiyoCode integration, triaged)
 
 Pre-PR fixes (user-approved cut):
 
@@ -1144,7 +1144,7 @@ Post-MVP (logged, not blocking an experimental flag):
       `[N images attached to the result]` stays, but `resource`/`resource_link` blocks have
       URIs/names we could surface, e.g. `[2 files attached: chart.png, data.csv]`. Minor.
 - [x] Truncation layering decided (user direction): the OPPOSITE of killing the outer layer -
-      CodeMode truncation off in OpenCode (`maxOutputBytes` lost its default; absent = no
+      CodeMode truncation off in KiyoCode (`maxOutputBytes` lost its default; absent = no
       truncation, uniform with the other two limits), native tool-output truncation is the
       single active layer (verified: `execute` flows through `tool.ts` `wrap()` like any
       normal tool, no exemption). See the section 3 entry.
@@ -1152,13 +1152,13 @@ Post-MVP (logged, not blocking an experimental flag):
       now relies solely on the deterministic `trace.maxActive > 1` counter (which proves
       true temporal overlap). The timeout tests were never flaky - 100ms timeout vs 60s
       tool sleeps (600x margin) with counter-based assertions.
-- [ ] Attachment propagation believed correct but unverified end-to-end at the OpenCode
+- [ ] Attachment propagation believed correct but unverified end-to-end at the KiyoCode
       wiring layer (codemode strips -> `Tool.ExecuteResult.attachments` -> processor
       normalizes -> `FilePart`s visible to the model). Code-reviewed as sound; confirm with
       one interactive session (an image-returning MCP tool) when convenient. Same session
       can eyeball TUI child-call rendering via `metadata.toolCalls`.
 - [x] Commit hygiene: all work committed and pushed on `codemode-v2` as six commits, in
-      generic-package + OpenCode-integration pairs (waves 0-5; Fixes 4-9; DSL pass +
+      generic-package + KiyoCode-integration pairs (waves 0-5; Fixes 4-9; DSL pass +
       error names + truncation layering). Future work: commit only when explicitly asked;
       push with `--no-verify` per repo convention. The scratch `.opencode/opencode.jsonc`
       stays uncommitted.
@@ -1194,7 +1194,7 @@ Post-MVP (logged, not blocking an experimental flag):
 - `parseProgram` wraps source in `async function __codemode__() { ... }`, transpiles TS, then
   slices between the first `{` and last `}` - line/col diagnostics are offset accordingly
   (`sourceLocation`). Don't inject prologue code; it breaks the offsets.
-- OpenCode wraps every tool's output with auto-truncation (`Tool.define` wrapper,
+- KiyoCode wraps every tool's output with auto-truncation (`Tool.define` wrapper,
   `truncate.output`, 2000 lines / 50KB, saves full output to disk and appends a hint) unless
   `metadata.truncated` is set. The `execute` tool currently rides that for free.
 - Effect version: both repos pin `effect@4.0.0-beta.83` via bun catalogs. This package uses
@@ -1205,7 +1205,7 @@ Post-MVP (logged, not blocking an experimental flag):
   `src/tool-runtime.ts` - tool tree, `copyIn`/`copyOut`, search/discovery, invoke path;
   `src/tool.ts` - `Tool.make` + JSON-Schema->TS rendering; `src/values.ts` - sandbox value
   types; `src/tool-error.ts` - `ToolError`; tests in `test/{codemode,parity,stdlib}.test.ts`.
-- OpenCode file map (integration points): `src/tool/code-mode.ts` (the adapter, now a
+- KiyoCode file map (integration points): `src/tool/code-mode.ts` (the adapter, now a
   registry tool service - `CodeModeTool` + `catalogInstructions`; formerly
   `src/session/code-mode.ts`); `src/tool/registry.ts` (`describeCodeMode`, enablement in
   `tools()`, `MCP.node` dep); `src/session/tools.ts` (raw-MCP-registration suppression
