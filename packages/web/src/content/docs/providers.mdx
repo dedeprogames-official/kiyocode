@@ -2005,6 +2005,84 @@ To use [Scaleway Generative APIs](https://www.scaleway.com/en/docs/generative-ap
 
 ---
 
+### SLAI (GRaPE / CRePE)
+
+[SLAI](https://grape.skinnertopia.com) (Skinnertopia Lab for AI) exposes an OpenAI-compatible API for its own GRaPE and CRePE models, plus a selection of third-party models routed through Logfare AI.
+
+1. Head over to the [SLAI Developer Portal](https://grape.skinnertopia.com/api/docs), create an account, and generate an API key. Keys start with `slai-`.
+
+2. Run the `/connect` command, scroll down to **Other**, and enter a provider ID like `slai`.
+
+   ```txt
+   /connect
+   ```
+
+3. Paste your SLAI API key.
+
+4. Create or update your `opencode.json`:
+
+   ```json title="opencode.json"
+   {
+     "$schema": "https://kiyocode.ai/config.json",
+     "provider": {
+       "slai": {
+         "npm": "@ai-sdk/openai-compatible",
+         "name": "SLAI",
+         "options": {
+           "baseURL": "https://grape.skinnertopia.com/api/openai/v1"
+         },
+         "models": {
+           "grape-2.1-flash_gguf": {
+             "name": "GRaPE 2.1 Flash"
+           },
+           "crepe-2@bf16": {
+             "name": "CRePE 2"
+           }
+         }
+       }
+     }
+   }
+   ```
+
+   `GET /models` requires no authentication, so you can list the full, current set of model IDs (including any third-party Logfare-routed models) at any time:
+
+   ```bash frame="none"
+   curl https://grape.skinnertopia.com/api/openai/v1/models
+   ```
+
+5. Run the `/models` command to select a model.
+
+   ```txt
+   /models
+   ```
+
+#### Thinking Mode
+
+GRaPE and CRePE models accept a `thinking_mode` field (`minimal | low | medium | high | xtra-hi`) that controls reasoning depth. CRePE models additionally accept `work_effort` (same values) to independently control agentic tool-use intensity. Set them per model — the field names must match the API exactly (snake_case), since `@ai-sdk/openai-compatible` passes model `options` through to the request body as-is:
+
+```json title="opencode.json" {6,9}
+{
+  "provider": {
+    "slai": {
+      "models": {
+        "grape-2.1-flash_gguf": {
+          "options": { "thinking_mode": "high" }
+        },
+        "crepe-2@bf16": {
+          "options": { "thinking_mode": "high", "work_effort": "medium" }
+        }
+      }
+    }
+  }
+}
+```
+
+:::note
+Quota errors (`429 insufficient_quota`) require emailing contact@skinnertopia.com to request an increase.
+:::
+
+---
+
 ### Snowflake Cortex
 
 [Snowflake Cortex](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-rest-api) gives you access to frontier models (Claude, OpenAI GPT-5, and more) via an OpenAI-compatible API. All inference runs within the Snowflake perimeter and is billed in Snowflake credits. For per-model rates, see the [Snowflake Service Consumption Table](https://www.snowflake.com/legal-files/CreditConsumptionTable.pdf).
