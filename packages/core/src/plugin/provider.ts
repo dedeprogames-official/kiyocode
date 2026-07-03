@@ -25,6 +25,7 @@ import { OpencodePlugin } from "./provider/opencode"
 import { OpenRouterPlugin } from "./provider/openrouter"
 import { PerplexityPlugin } from "./provider/perplexity"
 import { SapAICorePlugin } from "./provider/sap-ai-core"
+import { SlaiPlugin } from "./provider/slai"
 import { TogetherAIPlugin } from "./provider/togetherai"
 import { VercelPlugin } from "./provider/vercel"
 import { VenicePlugin } from "./provider/venice"
@@ -62,6 +63,7 @@ export const ProviderPlugins: PluginInternal.Plugin<PluginInternal.Requirements 
   OpenRouterPlugin,
   PerplexityPlugin,
   SapAICorePlugin,
+  SlaiPlugin,
   TogetherAIPlugin,
   VercelPlugin,
   VenicePlugin,
