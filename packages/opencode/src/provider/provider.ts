@@ -34,6 +34,45 @@ import { ProviderError } from "./error"
 
 const OPENAI_HEADER_TIMEOUT_DEFAULT = 10_000
 
+// SLAI (Skinnertopia Lab for AI, https://grape.skinnertopia.com/api/docs) isn't in
+// the models.dev catalog, so it's merged in here directly to make it discoverable
+// via `/connect` and `/models` without users hand-writing it in opencode.json.
+// Context/output limits and tool-calling support aren't published by SLAI; the
+// values below are conservative placeholders (limit matches the documented
+// `max_tokens` default of 32768; tool_call defaults to false) pending
+// confirmation against the live API.
+const SLAI_PROVIDER: ModelsDev.Provider = {
+  id: "slai",
+  name: "SLAI",
+  npm: "@ai-sdk/openai-compatible",
+  api: "https://grape.skinnertopia.com/api/openai/v1",
+  env: ["SLAI_API_KEY"],
+  models: {
+    "grape-2.1-flash_gguf": {
+      id: "grape-2.1-flash_gguf",
+      name: "GRaPE 2.1 Flash",
+      release_date: "",
+      attachment: false,
+      reasoning: false,
+      temperature: true,
+      tool_call: false,
+      limit: { context: 32768, output: 32768 },
+      modalities: { input: ["text"], output: ["text"] },
+    },
+    "crepe-2@bf16": {
+      id: "crepe-2@bf16",
+      name: "CRePE 2",
+      release_date: "",
+      attachment: false,
+      reasoning: false,
+      temperature: true,
+      tool_call: false,
+      limit: { context: 32768, output: 32768 },
+      modalities: { input: ["text"], output: ["text"] },
+    },
+  },
+}
+
 function wrapSSE(res: Response, ms: number, ctl: AbortController) {
   if (typeof ms !== "number" || ms <= 0) return res
   if (!res.body) return res
@@ -1319,7 +1358,8 @@ const layer = Layer.effect(
         const bridge = yield* EffectBridge.make()
         const cfg = yield* config.get()
         const modelsDev = yield* modelsDevSvc.get()
-        const catalog = mapValues(modelsDev, fromModelsDevProvider)
+        const modelsDevWithSlai: Record<string, ModelsDev.Provider> = { ...modelsDev, slai: SLAI_PROVIDER }
+        const catalog = mapValues(modelsDevWithSlai, fromModelsDevProvider)
         const database = mapValues(catalog, toPublicInfo)
 
         const providers: Record<ProviderV2.ID, Info> = {} as Record<ProviderV2.ID, Info>
